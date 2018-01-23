@@ -1,0 +1,16 @@
+New-TargetType `
+    -Name 'DockerTag' `
+    -Arguments 'Registry','Name','Tag1','Tag2' `
+    -Test { `
+            param([hashtable]$Arguments) `
+            Write-Output "docker image ls --filter=reference=$($Arguments.Registry):$($Arguments.Tag1)" `
+            $false `
+        } `
+    -New { `
+            param([hashtable]$Arguments) `
+            Write-Output "docker image tag $($Arguments.Registry):$($Arguments.Tag1) $($Arguments.Registry):$($Arguments.Tag2)" `
+        } `
+    -Remove { `
+            param([hashtable]$Arguments) `
+            Write-Output "docker image rm $($Arguments.Registry):$($Arguments.Tag2)" `
+        }
