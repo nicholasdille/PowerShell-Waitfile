@@ -5,12 +5,12 @@ Import-Module -Name Waitfile -Force
 Describe 'Makefile' {
     It 'Add new type' {
         $Count = $Types.Keys.Count + 1
-        New-TargetType -Name 'File' -Test {}
+        New-TargetType -Name 'File' -Test {} -New {} -Remove {}
         $Types.Keys.Count | Should Be $Count
     }
     It 'Fails to add existing type' {
         $Count = $Types.Keys.Count
-        { New-TargetType -Name 'File' -Test {} } | Should Throw
+        { New-TargetType -Name 'File' -Test {} -New {} -Remove {} } | Should Throw
         $Types.Keys.Count | Should Be $Count
     }
     It 'Adds new target' {
