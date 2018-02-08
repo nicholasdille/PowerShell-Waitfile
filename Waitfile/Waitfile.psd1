@@ -14,6 +14,7 @@
         'Invoke-Target'
         'New-Target'
         'New-TargetType'
+        'Test-TargetType'
     )
     CmdletsToExport = @()
     VariablesToExport = '*'
