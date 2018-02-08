@@ -8,7 +8,13 @@
     Description = 'PowerShell-ish alternative for Makefile'
     # PowerShellVersion = ''
     # RequiredModules = @()
-    FunctionsToExport = '*'
+    FunctionsToExport = @(
+        'Get-Target'
+        'Get-TargetType'
+        'Invoke-Target'
+        'New-Target'
+        'New-TargetType'
+    )
     CmdletsToExport = @()
     VariablesToExport = '*'
     AliasesToExport = @()
