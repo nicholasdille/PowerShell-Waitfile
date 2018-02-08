@@ -11,5 +11,5 @@ New-TargetType `
         } `
     -Remove { `
             param([hashtable]$Arguments) `
-            Uninstall-Module -Name $(Arguments.Name) -RequiredVersion $($Arguments.Version) `
+            Uninstall-Module -Name $($Arguments.Name) -RequiredVersion $($Arguments.Version) `
         }
