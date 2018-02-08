@@ -39,11 +39,12 @@ function New-TargetType {
         Write-Verbose "Creating target type <$Name>"
 
         $Types[$Name] = [pscustomobject]@{
-            Name      = $Name
-            Arguments = $Arguments
-            Test      = $Test
-            New       = $New
-            Remove    = $Remove
+            Name       = $Name
+            Arguments  = $Arguments
+            Test       = $Test
+            New        = $New
+            Remove     = $Remove
+            PSTypeName = 'WaitfileTargetType'
         }
     }
 }

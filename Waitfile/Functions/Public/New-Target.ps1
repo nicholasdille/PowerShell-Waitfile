@@ -57,6 +57,7 @@ function New-Target {
             Default       = [bool]$Default
             Type          = $Type
             TypeArguments = $TypeArguments
+            PSTypeName    = 'WaitfileTarget'
         }
     }
 }

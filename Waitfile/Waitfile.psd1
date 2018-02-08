@@ -18,7 +18,10 @@
     CmdletsToExport = @()
     VariablesToExport = '*'
     AliasesToExport = @()
-    #FormatsToProcess = @()
+    FormatsToProcess = @(
+        'WaitfileTargetType.Format.ps1xml'
+        'WaitfileTarget.Format.ps1xml'
+    )
     PrivateData = @{
         PSData = @{
             # Tags = @()
