@@ -7,7 +7,24 @@
     Copyright = '(c) 2017 Nicholas Dille. All rights reserved.'
     Description = 'PowerShell-ish alternative for Makefile'
     # PowerShellVersion = ''
-    # RequiredModules = @()
+    RequiredModules = @(
+        @{
+            ModuleName = 'pester'
+            RequiredVersion = '4.1.1'
+        }
+        @{
+            ModuleName = 'platyps'
+            RequiredVersion = '0.9.0'
+        }
+        @{
+            ModuleName = 'PSGitHub'
+            RequiredVersion = '0.13.9'
+        }
+        @{
+            ModuleName = 'PSScriptAnalyzer'
+            RequiredVersion = '1.16.1'
+        }
+    )
     FunctionsToExport = @(
         'Clear-Target'
         'Get-Target'
