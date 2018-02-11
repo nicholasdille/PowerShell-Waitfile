@@ -9,11 +9,13 @@
     # PowerShellVersion = ''
     # RequiredModules = @()
     FunctionsToExport = @(
+        'Clear-Target'
         'Get-Target'
         'Get-TargetType'
         'Invoke-Target'
         'New-Target'
         'New-TargetType'
+        'Remove-Target'
         'Test-TargetType'
     )
     CmdletsToExport = @()
