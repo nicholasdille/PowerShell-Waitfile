@@ -1,6 +1,8 @@
-$env:PSModulePath = "$env:PSModulePath;$((Get-Item -Path "$PSScriptRoot\..").FullName)"
+if ($env:PSModulePath -notlike '*Waitfile*') {
+    $env:PSModulePath = "$((Get-Item -Path "$PSScriptRoot\..").FullName);$env:PSModulePath"
+}
 
-Import-Module -Name Waitfile -Force
+Import-Module -Name Waitfile -Force -ErrorAction 'Stop'
 
 Describe 'Makefile' {
     It 'Add new type' {
@@ -41,7 +43,7 @@ Describe 'Makefile' {
         Mock Test-InvokeTargetTest {}
         Mock Test-InvokeTargetNew {}
         Mock Test-InvokeTargetRemove {}
-        Clear-Target
+        Clear-Target -Confirm:$false
         New-TargetType -Name 'TargetTest' -Test { Test-InvokeTargetTest } -New { Test-InvokeTargetNew } -Remove { Test-InvokeTargetRemove }
         New-Target -Name 'TargetTest' -Type 'TargetTest' -Default
         Invoke-Target -Action New
@@ -49,6 +51,51 @@ Describe 'Makefile' {
         Assert-MockCalled -CommandName Test-InvokeTargetNew -Times 1 -Exactly
         Invoke-Target -Action Remove
         Assert-MockCalled -CommandName Test-InvokeTargetTest -Times 2 -Exactly
+        Assert-MockCalled -CommandName Test-InvokeTargetNew -Times 1 -Exactly
         Assert-MockCalled -CommandName Test-InvokeTargetRemove -Times 1 -Exactly
+    }
+    It 'Clears the targets' {
+        Clear-Target -Confirm:$false
+        @(Get-Target).Count | Should Be 0
+    }
+    It 'Stores a message' {
+        Clear-TargetMessage -Confirm:$false
+        (Get-TargetMessage).Count | Should Be 0
+        New-TargetMessage -Name 'TestMessage' -Message 'My message'
+        (Get-TargetMessage).Count | Should Be 1
+    }
+    It 'Removes a message' {
+        (Get-TargetMessage).Count | Should Be 1
+        Remove-TargetMessage -Name 'TestMessage' -Confirm:$false
+        (Get-TargetMessage).Count | Should Be 0
+    }
+    Clear-TargetMessage -Confirm:$false
+    New-TargetType -Name 'Message' -Arguments 'Name' `
+        -Test {
+            param([hashtable]$Arguments)
+            Test-TargetMessage -Name $Arguments.Name
+        } `
+        -New {
+            param([hashtable]$Arguments)
+            New-TargetMessage -Name $Arguments.Name -Message 'Test message'
+        } `
+        -Remove {
+            param([hashtable]$Arguments)
+            Remove-TargetMessage -Name $Arguments.Name -Confirm:$false
+        }
+    New-Target -Name 'MessageTester' -Type 'Message' -TypeArguments @{Name = 'Test'}
+    Mock Test-TargetMessage {}
+    Mock New-TargetMessage {}
+    Mock Remove-TargetMessage {}
+    It 'Stores a message while running a target' {
+        Invoke-Target -Name 'MessageTester' -Action New
+        Assert-MockCalled -CommandName 'Test-TargetMessage' -Times 1 -Exactly
+        Assert-MockCalled -CommandName 'New-TargetMessage' -Times 1 -Exactly
+    }
+    It 'Removes a message while running a target' {
+        Invoke-Target -Name 'MessageTester' -Action Remove
+        Assert-MockCalled -CommandName 'Test-TargetMessage' -Times 2 -Exactly
+        Assert-MockCalled -CommandName 'New-TargetMessage' -Times 1 -Exactly
+        Assert-MockCalled -CommandName 'Remove-TargetMessage' -Times 1 -Exactly
     }
 }
