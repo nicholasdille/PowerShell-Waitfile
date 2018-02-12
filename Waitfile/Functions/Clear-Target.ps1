@@ -1,6 +1,19 @@
 function Clear-Target {
-    [CmdletBinding()]
+    [CmdletBinding(SupportsShouldProcess,ConfirmImpact='High')]
     param()
 
-    $script:Targets.Clear()
+    begin {
+        if (-not $PSBoundParameters.ContainsKey('Confirm')) {
+            $ConfirmPreference = $PSCmdlet.SessionState.PSVariable.GetValue('ConfirmPreference')
+        }
+        if (-not $PSBoundParameters.ContainsKey('WhatIf')) {
+            $WhatIfPreference = $PSCmdlet.SessionState.PSVariable.GetValue('WhatIfPreference')
+        }
+    }
+
+    process {
+        if ($Force -or $PSCmdlet.ShouldProcess("Remove all targets?")) {
+            $script:Targets.Clear()
+        }
+    }
 }
