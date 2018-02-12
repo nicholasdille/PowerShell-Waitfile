@@ -4,6 +4,9 @@ $script:Types = @{}
 # Data structure for storing targets
 $script:Targets = @{}
 
+# Data structure for passing information between targets
+$script:Messages = @{}
+
 # Import functions
 Get-ChildItem -Path "$PSScriptRoot\Functions" -Filter '*.ps1' -Recurse | ForEach-Object {
     . "$($_.FullName)"

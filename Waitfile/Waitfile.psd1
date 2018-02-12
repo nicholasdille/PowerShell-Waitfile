@@ -27,12 +27,17 @@
     )
     FunctionsToExport = @(
         'Clear-Target'
+        'Clear-TargetMessage'
         'Get-Target'
+        'Get-TargetMessage'
         'Get-TargetType'
         'Invoke-Target'
         'New-Target'
+        'New-TargetMessage'
         'New-TargetType'
         'Remove-Target'
+        'Remove-TargetMessage'
+        'Test-TargetMessage'
         'Test-TargetType'
     )
     CmdletsToExport = @()
