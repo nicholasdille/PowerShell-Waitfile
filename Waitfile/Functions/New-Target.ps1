@@ -16,7 +16,7 @@ function New-Target {
         [string]
         $Type
         ,
-        [Parameter(ParameterSetName='FullTarget', Mandatory)]
+        [Parameter(ParameterSetName='FullTarget')]
         [Parameter()]
         [ValidateNotNullOrEmpty()]
         [hashtable]
