@@ -24,6 +24,14 @@
             ModuleName = 'PSScriptAnalyzer'
             RequiredVersion = '1.16.1'
         }
+        @{
+            ModuleName = 'CICD'
+            RequiredVersion = '0.1.23.24'
+        }
+        @{
+            ModuleName = 'BuildHelpers'
+            RequiredVersion = '1.0.0'
+        }
     )
     FunctionsToExport = @(
         'Clear-Target'
