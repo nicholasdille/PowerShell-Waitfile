@@ -10,6 +10,18 @@ Describe 'Makefile' {
         New-TargetType -Name 'File' -Test {} -New {} -Remove {}
         @(Get-TargetType).Count | Should Be $Count
     }
+    It 'Tests a type' {
+        function Test-TestTypeTest {}
+        function Test-TestTypeNew {}
+        function Test-TestTypeRemove {}
+        Mock Test-TestTypeTest { $true }
+        Mock Test-TestTypeNew { $true }
+        Mock Test-TestTypeRemove { $true }
+        New-TargetType -Name 'TestType' -Test { Test-TestTypeTest } -New { Test-TestTypeNew } -Remove { Test-TestTypeRemove }
+        Test-TargetType -Name 'TestType' -Action Test | Should Be $true
+        Test-TargetType -Name 'TestType' -Action New | Should Be $true
+        Test-TargetType -Name 'TestType' -Action Remove | Should Be $true
+    }
     It 'Fails to add existing type' {
         $Count = @(Get-TargetType).Count
         { New-TargetType -Name 'File' -Test {} -New {} -Remove {} } | Should Throw
@@ -36,6 +48,14 @@ Describe 'Makefile' {
     It 'Fails to add two default targets' {
         { New-Target -Name 'Test3' -Type 'File' -Default } | Should Throw
     }
+    It 'Fails to removes a target (dependencies)' {
+        { Remove-Target -Name 'Test1' } | Should Throw
+    }
+    It 'Removes a target' {
+        $Count = @(Get-Target).Count - 1
+        Remove-Target -Name 'Test2'
+        @(Get-Target).Count | Should Be $Count
+    }
     It 'Invokes a target' {
         function Test-InvokeTargetTest {}
         function Test-InvokeTargetNew {}
@@ -60,14 +80,14 @@ Describe 'Makefile' {
     }
     It 'Stores a message' {
         Clear-TargetMessage -Confirm:$false
-        (Get-TargetMessage).Count | Should Be 0
+        @(Get-TargetMessage).Count | Should Be 0
         New-TargetMessage -Name 'TestMessage' -Message 'My message'
-        (Get-TargetMessage).Count | Should Be 1
+        @(Get-TargetMessage).Count | Should Be 1
     }
     It 'Removes a message' {
-        (Get-TargetMessage).Count | Should Be 1
+        @(Get-TargetMessage).Count | Should Be 1
         Remove-TargetMessage -Name 'TestMessage' -Confirm:$false
-        (Get-TargetMessage).Count | Should Be 0
+        @(Get-TargetMessage).Count | Should Be 0
     }
     Clear-TargetMessage -Confirm:$false
     New-TargetType -Name 'Message' -Arguments 'Name' `
@@ -84,6 +104,15 @@ Describe 'Makefile' {
             Remove-TargetMessage -Name $Arguments.Name -Confirm:$false
         }
     New-Target -Name 'MessageTester' -Type 'Message' -TypeArguments @{Name = 'Test'}
+    It 'Stores a message while running a target' {
+        Invoke-Target -Name 'MessageTester' -Action New
+        Test-TargetMessage -Name 'Test' | Should Be $true
+    }
+    It 'Removes a message while running a target' {
+        Invoke-Target -Name 'MessageTester' -Action Remove
+        Test-TargetMessage -Name 'Test' | Should Be $false
+    }
+    <#
     Mock Test-TargetMessage {}
     Mock New-TargetMessage {}
     Mock Remove-TargetMessage {}
@@ -98,4 +127,5 @@ Describe 'Makefile' {
         Assert-MockCalled -CommandName 'New-TargetMessage' -Times 1 -Exactly
         Assert-MockCalled -CommandName 'Remove-TargetMessage' -Times 1 -Exactly
     }
+    #>
 }
