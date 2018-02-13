@@ -6,7 +6,7 @@ function Test-TargetType {
         [string]
         $Name
         ,
-        [Parameter(Mandatory)]
+        [Parameter()]
         [ValidateNotNullOrEmpty()]
         [hashtable]
         $TypeArguments
