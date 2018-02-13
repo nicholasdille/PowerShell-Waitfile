@@ -23,11 +23,11 @@ function Invoke-Target {
 
     process {
         if ($PSBoundParameters.ContainsKey('Name')) {
-            Write-Verbose "Extracting target by name <$Name>"
+            Write-Debug "Extracting target by name <$Name>"
             $Target = $Targets[$Name]
 
         } else {
-            Write-Verbose "Extracting default target"
+            Write-Debug "Extracting default target"
             $Target = $Targets.Values | Where-Object { $_.Default }
         }
 
@@ -35,10 +35,12 @@ function Invoke-Target {
             throw "$(' ' * $Indentation * $Level)Need exactly one default target"
         }
 
-        $TargetTypeTest = Invoke-Command -ScriptBlock (Get-TargetType -Name $Target.Type).Test -ArgumentList $Target.TypeArguments
-        if ($Action -eq 'New' -and $TargetTypeTest -is [bool] -and $TargetTypeTest) {
-            Write-Verbose "Target <$($Target.Name)> already exists"
-            return
+        if ($Target.Type) {
+            $TargetTypeTest = Invoke-Command -ScriptBlock (Get-TargetType -Name $Target.Type).Test -ArgumentList $Target.TypeArguments
+            if ($Action -eq 'New' -and $TargetTypeTest -is [bool] -and $TargetTypeTest) {
+                Write-Debug "Target <$($Target.Name)> already exists"
+                return
+            }
         }
 
         Write-Verbose "$(' ' * $Indentation * $Level)[$Level] Processing target $($Target.Name)"
@@ -50,7 +52,9 @@ function Invoke-Target {
             }
         }
 
-        Write-Verbose "$(' ' * $Indentation * $Level)[$Level] Invoking action on <$($Target.Name)>"
-        Invoke-Command -ScriptBlock (Get-TargetType -Name $Target.Type).$Action -ArgumentList $Target.TypeArguments
+        if ($Target.Type) {
+            Write-Verbose "$(' ' * $Indentation * $Level)[$Level] Invoking action on <$($Target.Name)>"
+            Invoke-Command -ScriptBlock (Get-TargetType -Name $Target.Type).$Action -ArgumentList $Target.TypeArguments
+        }
     }
 }
