@@ -42,7 +42,7 @@ function New-Target {
                 throw "Target type <$Type> does not exist"
             }
             if (Compare-Object -ReferenceObject @($Types[$Type].Arguments | Sort-Object) -DifferenceObject @($TypeArguments.Keys | Sort-Object)) {
-                throw "Type arguments <$($TypeArguments.Keys -join ',')> do not match expectation <$($Types[$Type].Arguments -join ',')>"
+                throw "Type arguments <$($TypeArguments.Keys -join ',')> do not match expectation <$($Types[$Type].Arguments -join ',')> for type <$Type>"
             }
         }
         if ($PSBoundParameters.ContainsKey('DependsOn')) {

@@ -17,6 +17,9 @@ function Remove-Target {
     }
 
     process {
+        if (Get-Target | Where-Object { $_.DependsOn -contains $Name }) {
+            throw "Unable to remove target $Name because other target depend on it"
+        }
         if ($Force -or $PSCmdlet.ShouldProcess("Remove target named '$Name'?")) {
             $Targets.Remove($Name)
         }
