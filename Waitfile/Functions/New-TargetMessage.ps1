@@ -22,6 +22,6 @@ function New-TargetMessage {
         }
         Write-Verbose "Creating message <$Name>"
 
-        $Messages[$Name] = $Message
+        $Messages.Add($Name, $Message)
     }
 }

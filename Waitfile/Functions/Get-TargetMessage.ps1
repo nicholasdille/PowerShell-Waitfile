@@ -4,8 +4,23 @@ function Get-TargetMessage {
         [Parameter()]
         [ValidateNotNullOrEmpty()]
         [string]
-        $Name = '*'
+        $Name
     )
 
-    $Messages | Where-Object { $_.Name -like $Name }
+    if ($PSBoundParameters.ContainsKey('Name')) {
+        if (Test-TargetMessage -Name $Name) {
+            [pscustomobject]@{
+                Name = $Name
+                Message = $Messages[$Name]
+            }
+        }
+
+    } else {
+        $Messages.Keys | ForEach-Object {
+            [pscustomobject]@{
+                Name = $_
+                Message = $Messages[$_]
+            }
+        }
+    }
 }

@@ -13,7 +13,7 @@ function Clear-TargetMessage {
 
     process {
         if ($Force -or $PSCmdlet.ShouldProcess("Remove all messages?")) {
-            $script:Messages.Clear()
+            $Messages.Clear()
         }
     }
 }

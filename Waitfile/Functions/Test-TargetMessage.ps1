@@ -7,5 +7,5 @@ function Test-TargetMessage {
         $Name
     )
 
-    [bool](Get-TargetMessage | Where-Object { $_.Name -ieq $Name })
+    $Messages.ContainsKey($Name)
 }
